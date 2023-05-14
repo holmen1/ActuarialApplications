@@ -1,4 +1,4 @@
-@model ActuarialApplications.Models.Rate
+@model ActuarialApplications.Models.Swap
 
 @{
     ViewData["Title"] = "Create";
@@ -6,26 +6,36 @@
 
 <h1>Create</h1>
 
-<h4>Rate</h4>
+<h4>Swap</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="ValueDate" class="control-label"></label>
                 <input asp-for="ValueDate" class="form-control" />
                 <span asp-validation-for="ValueDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ParameterName" class="control-label"></label>
-                <input asp-for="ParameterName" class="form-control" />
-                <span asp-validation-for="ParameterName" class="text-danger"></span>
+                <label asp-for="Currency" class="control-label"></label>
+                <input asp-for="Currency" class="form-control" />
+                <span asp-validation-for="Currency" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Duration" class="control-label"></label>
-                <input asp-for="Duration" class="form-control" />
-                <span asp-validation-for="Duration" class="text-danger"></span>
+                <label asp-for="Tenor" class="control-label"></label>
+                <input asp-for="Tenor" class="form-control" />
+                <span asp-validation-for="Tenor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SettlementFreq" class="control-label"></label>
+                <input asp-for="SettlementFreq" class="form-control" />
+                <span asp-validation-for="SettlementFreq" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Value" class="control-label"></label>

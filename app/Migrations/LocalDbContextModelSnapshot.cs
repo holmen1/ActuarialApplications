@@ -8,36 +8,37 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ActuarialApplications.Migrations
 {
-    [DbContext(typeof(ActuarialApplicationsRateContext))]
-    partial class ActuarialApplicationsRateContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(LocalDbContext))]
+    partial class LocalDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
 
-            modelBuilder.Entity("ActuarialApplications.Models.Rate", b =>
+            modelBuilder.Entity("ActuarialApplications.Models.Swap", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Duration")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ParameterName")
-                        .IsRequired()
+                    b.Property<DateTime>("ValueDate")
                         .HasColumnType("TEXT");
+
+                    b.Property<string>("Currency")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Tenor")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double?>("SettlementFreq")
+                        .HasColumnType("REAL");
 
                     b.Property<double?>("Value")
                         .HasColumnType("REAL");
 
-                    b.Property<DateTime>("ValueDate")
-                        .HasColumnType("TEXT");
+                    b.HasKey("ValueDate", "Currency", "Tenor");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Rate");
+                    b.ToTable("Swap");
                 });
 #pragma warning restore 612, 618
         }

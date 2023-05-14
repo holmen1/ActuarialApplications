@@ -2,8 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<ActuarialApplicationsRateContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("ActuarialApplicationsRateContext")));
+builder.Services.AddDbContext<LocalDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("LocalDbContext")));
+
+
+// builder.Services.AddDbContext<LocalDbContext>(options =>
+//     options.UseSqlite(builder.Configuration.GetConnectionString("LocalDbContext")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

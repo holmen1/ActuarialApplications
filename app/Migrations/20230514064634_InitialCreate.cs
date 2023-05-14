@@ -10,26 +10,26 @@ namespace ActuarialApplications.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Rate",
+                name: "Swap",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
                     ValueDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ParameterName = table.Column<string>(type: "TEXT", nullable: false),
-                    Duration = table.Column<int>(type: "INTEGER", nullable: false),
+                    Currency = table.Column<string>(type: "TEXT", nullable: false),
+                    Tenor = table.Column<int>(type: "INTEGER", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false),
+                    SettlementFreq = table.Column<double>(type: "REAL", nullable: true),
                     Value = table.Column<double>(type: "REAL", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Rate", x => x.Id);
+                    table.PrimaryKey("PK_Swap", x => new { x.ValueDate, x.Currency, x.Tenor });
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Rate");
+                name: "Swap");
         }
     }
 }

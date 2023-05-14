@@ -9,85 +9,85 @@ using ActuarialApplications.Models;
 
 namespace ActuarialApplications.Controllers
 {
-    public class RatesController : Controller
+    public class SwapsController : Controller
     {
-        private readonly ActuarialApplicationsRateContext _context;
+        private readonly LocalDbContext _context;
 
-        public RatesController(ActuarialApplicationsRateContext context)
+        public SwapsController(LocalDbContext context)
         {
             _context = context;
         }
 
-        // GET: Rates
+        // GET: Swaps
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Rate.ToListAsync());
+            return View(await _context.Swap.ToListAsync());
         }
 
-        // GET: Rates/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Swaps/Details/5
+        public async Task<IActionResult> Details(DateTime? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var rate = await _context.Rate
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (rate == null)
+            var swap = await _context.Swap
+                .FirstOrDefaultAsync(m => m.ValueDate == id);
+            if (swap == null)
             {
                 return NotFound();
             }
 
-            return View(rate);
+            return View(swap);
         }
 
-        // GET: Rates/Create
+        // GET: Swaps/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Rates/Create
+        // POST: Swaps/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ValueDate,ParameterName,Duration,Value")] Rate rate)
+        public async Task<IActionResult> Create([Bind("Id,ValueDate,Currency,Tenor,SettlementFreq,Value")] Swap swap)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(rate);
+                _context.Add(swap);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(rate);
+            return View(swap);
         }
 
-        // GET: Rates/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Swaps/Edit/5
+        public async Task<IActionResult> Edit(DateTime? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var rate = await _context.Rate.FindAsync(id);
-            if (rate == null)
+            var swap = await _context.Swap.FindAsync(id);
+            if (swap == null)
             {
                 return NotFound();
             }
-            return View(rate);
+            return View(swap);
         }
 
-        // POST: Rates/Edit/5
+        // POST: Swaps/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ValueDate,ParameterName,Duration,Value")] Rate rate)
+        public async Task<IActionResult> Edit(DateTime id, [Bind("Id,ValueDate,Currency,Tenor,SettlementFreq,Value")] Swap swap)
         {
-            if (id != rate.Id)
+            if (id != swap.ValueDate)
             {
                 return NotFound();
             }
@@ -96,12 +96,12 @@ namespace ActuarialApplications.Controllers
             {
                 try
                 {
-                    _context.Update(rate);
+                    _context.Update(swap);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RateExists(rate.Id))
+                    if (!SwapExists(swap.ValueDate))
                     {
                         return NotFound();
                     }
@@ -112,41 +112,41 @@ namespace ActuarialApplications.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(rate);
+            return View(swap);
         }
 
-        // GET: Rates/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Swaps/Delete/5
+        public async Task<IActionResult> Delete(DateTime? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var rate = await _context.Rate
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (rate == null)
+            var swap = await _context.Swap
+                .FirstOrDefaultAsync(m => m.ValueDate == id);
+            if (swap == null)
             {
                 return NotFound();
             }
 
-            return View(rate);
+            return View(swap);
         }
 
-        // POST: Rates/Delete/5
+        // POST: Swaps/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(DateTime id)
         {
-            var rate = await _context.Rate.FindAsync(id);
-            _context.Rate.Remove(rate);
+            var swap = await _context.Swap.FindAsync(id);
+            _context.Swap.Remove(swap);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RateExists(int id)
+        private bool SwapExists(DateTime id)
         {
-            return _context.Rate.Any(e => e.Id == id);
+            return _context.Swap.Any(e => e.ValueDate == id);
         }
     }
 }
