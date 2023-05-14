@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ActuarialApplications.Migrations
 {
     [DbContext(typeof(LocalDbContext))]
-    [Migration("20230514064634_InitialCreate")]
+    [Migration("20230514093125_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,9 +27,6 @@ namespace ActuarialApplications.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Tenor")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Id")
                         .HasColumnType("INTEGER");
 
                     b.Property<double?>("SettlementFreq")

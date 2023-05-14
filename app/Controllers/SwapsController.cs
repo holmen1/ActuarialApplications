@@ -24,24 +24,6 @@ namespace ActuarialApplications.Controllers
             return View(await _context.Swap.ToListAsync());
         }
 
-        // GET: Swaps/Details/5
-        public async Task<IActionResult> Details(DateTime ValueDate, string Currency, int Tenor)
-        {
-        if (ValueDate == null || Currency == null)
-            {
-                return NotFound();
-            }
-
-            var swap = await _context.Swap
-                .FirstOrDefaultAsync(m => m.ValueDate == ValueDate && m.Currency == Currency && m.Tenor == Tenor);
-            if (swap == null)
-            {
-                return NotFound();
-            }
-
-            return View(swap);
-        }
-
         // GET: Swaps/Create
         public IActionResult Create()
         {

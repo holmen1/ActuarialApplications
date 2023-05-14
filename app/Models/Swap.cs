@@ -7,8 +7,6 @@ namespace ActuarialApplications.Models
 
     public class Swap
     {
-        [Key]
-        public int Id { get; set; }
         [DataType(DataType.Date)]
         public DateTime ValueDate { get; set; }
         public string Currency { get; set; }

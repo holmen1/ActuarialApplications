@@ -27,9 +27,6 @@ namespace ActuarialApplications.Migrations
                     b.Property<int>("Tenor")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("INTEGER");
-
                     b.Property<double?>("SettlementFreq")
                         .HasColumnType("REAL");
 
