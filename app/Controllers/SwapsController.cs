@@ -35,7 +35,7 @@ namespace ActuarialApplications.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ValueDate,Currency,Tenor,SettlementFreq,Value")] Swap swap)
+        public async Task<IActionResult> Create([Bind("ValueDate,Currency,Tenor,SettlementFreq,Value")] Swap swap)
         {
             if (ModelState.IsValid)
             {
@@ -47,56 +47,7 @@ namespace ActuarialApplications.Controllers
         }
 
         // GET: Swaps/Edit/5
-        public async Task<IActionResult> Edit(DateTime ValueDate, string Currency, int Tenor)
-        {
-            if (Currency == null)
-            {
-                return NotFound();
-            }
-
-            var swap = await _context.Swap.FindAsync(ValueDate, Currency, Tenor);
-            if (swap == null)
-            {
-                return NotFound();
-            }
-            return View(swap);
-        }
-
-        // POST: Swaps/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(DateTime ValueDate, string Currency, int Tenor, [Bind("Id,ValueDate,Currency,Tenor,SettlementFreq,Value")] Swap swap)
-        {
-            if (ValueDate != swap.ValueDate)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(swap);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SwapExists(swap.ValueDate, swap.Currency, swap.Tenor))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(swap);
-        }
-
+       
         // GET: Swaps/Delete/5
         public async Task<IActionResult> Delete(DateTime ValueDate, string Currency, int Tenor)
         {

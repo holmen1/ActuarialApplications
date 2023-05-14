@@ -10,6 +10,10 @@ bld/
 [Oo]bj/
 [Ll]og/
 
+# SQLite
+*-shm
+*-wal
+
 .ionide/
 .vs
 .idea
