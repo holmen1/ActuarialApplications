@@ -3,6 +3,14 @@
 ### Description
 
 
+## Entity Framework
+
+```bash
+dotnet ef migrations add InitialCreate  
+dotnet ef database update
+```
+
+
 
 ## Projects
 
@@ -10,7 +18,7 @@
 
 
 ## TODO
-[ ] Database  
+[x] Database  
 [ ] RFR  
 [ ] ESG  
 [ ] Projections Life    

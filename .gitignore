@@ -11,6 +11,7 @@ bld/
 [Ll]og/
 
 # SQLite
+*.db
 *-shm
 *-wal
 

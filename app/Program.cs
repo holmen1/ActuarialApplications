@@ -1,18 +1,23 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using ActuarialApplications.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+
 
 builder.Services.AddDbContext<LocalDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("LocalDbContext")));
-
-
-// builder.Services.AddDbContext<LocalDbContext>(options =>
-//     options.UseSqlite(builder.Configuration.GetConnectionString("LocalDbContext")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    SeedSwapData.Initialize(services);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
