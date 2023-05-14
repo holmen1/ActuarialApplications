@@ -13,10 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                @Html.DisplayNameFor(model => model.ValueDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SettlementFreq)
+                @Html.DisplayNameFor(model => model.Currency)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tenor)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Value)
@@ -28,18 +31,21 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
+                @Html.DisplayFor(modelItem => item.ValueDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SettlementFreq)
+                @Html.DisplayFor(modelItem => item.Currency)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tenor)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Value)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Edit", "Edit", new { ValueDate = item.ValueDate, Currency = item.Currency, Tenor = item.Tenor }) |
+                @Html.ActionLink("Details", "Details", new { ValueDate = item.ValueDate, Currency = item.Currency, Tenor = item.Tenor }) |
+                @Html.ActionLink("Delete", "Delete", new { ValueDate = item.ValueDate, Currency = item.Currency, Tenor = item.Tenor })
             </td>
         </tr>
 }

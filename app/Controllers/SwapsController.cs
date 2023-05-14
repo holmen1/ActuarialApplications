@@ -25,15 +25,15 @@ namespace ActuarialApplications.Controllers
         }
 
         // GET: Swaps/Details/5
-        public async Task<IActionResult> Details(DateTime? id)
+        public async Task<IActionResult> Details(DateTime ValueDate, string Currency, int Tenor)
         {
-            if (id == null)
+        if (ValueDate == null || Currency == null)
             {
                 return NotFound();
             }
 
             var swap = await _context.Swap
-                .FirstOrDefaultAsync(m => m.ValueDate == id);
+                .FirstOrDefaultAsync(m => m.ValueDate == ValueDate && m.Currency == Currency && m.Tenor == Tenor);
             if (swap == null)
             {
                 return NotFound();
@@ -65,14 +65,14 @@ namespace ActuarialApplications.Controllers
         }
 
         // GET: Swaps/Edit/5
-        public async Task<IActionResult> Edit(DateTime? id)
+        public async Task<IActionResult> Edit(DateTime ValueDate, string Currency, int Tenor)
         {
-            if (id == null)
+            if (Currency == null)
             {
                 return NotFound();
             }
 
-            var swap = await _context.Swap.FindAsync(id);
+            var swap = await _context.Swap.FindAsync(ValueDate, Currency, Tenor);
             if (swap == null)
             {
                 return NotFound();
@@ -85,9 +85,9 @@ namespace ActuarialApplications.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(DateTime id, [Bind("Id,ValueDate,Currency,Tenor,SettlementFreq,Value")] Swap swap)
+        public async Task<IActionResult> Edit(DateTime ValueDate, string Currency, int Tenor, [Bind("Id,ValueDate,Currency,Tenor,SettlementFreq,Value")] Swap swap)
         {
-            if (id != swap.ValueDate)
+            if (ValueDate != swap.ValueDate)
             {
                 return NotFound();
             }
@@ -101,7 +101,7 @@ namespace ActuarialApplications.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SwapExists(swap.ValueDate))
+                    if (!SwapExists(swap.ValueDate, swap.Currency, swap.Tenor))
                     {
                         return NotFound();
                     }
@@ -116,15 +116,15 @@ namespace ActuarialApplications.Controllers
         }
 
         // GET: Swaps/Delete/5
-        public async Task<IActionResult> Delete(DateTime? id)
+        public async Task<IActionResult> Delete(DateTime ValueDate, string Currency, int Tenor)
         {
-            if (id == null)
+            if (ValueDate == null)
             {
                 return NotFound();
             }
 
             var swap = await _context.Swap
-                .FirstOrDefaultAsync(m => m.ValueDate == id);
+                .FirstOrDefaultAsync(m => m.ValueDate == ValueDate && m.Currency == Currency && m.Tenor == Tenor);
             if (swap == null)
             {
                 return NotFound();
@@ -136,17 +136,17 @@ namespace ActuarialApplications.Controllers
         // POST: Swaps/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(DateTime id)
+        public async Task<IActionResult> DeleteConfirmed(DateTime ValueDate, string Currency, int Tenor)
         {
-            var swap = await _context.Swap.FindAsync(id);
+            var swap = await _context.Swap.FindAsync(ValueDate, Currency, Tenor);
             _context.Swap.Remove(swap);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SwapExists(DateTime id)
+        private bool SwapExists(DateTime ValueDate, string Currency, int Tenor)
         {
-            return _context.Swap.Any(e => e.ValueDate == id);
+            return _context.Swap.Any(e => e.ValueDate == ValueDate && e.Currency == Currency && e.Tenor == Tenor);
         }
     }
 }
