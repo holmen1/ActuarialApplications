@@ -16,6 +16,22 @@ namespace ActuarialApplications.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
 
+            modelBuilder.Entity("ActuarialApplications.Models.RiskFreeRate", b =>
+                {
+                    b.Property<DateTime>("ValueDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Maturity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Value")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("ValueDate", "Maturity");
+
+                    b.ToTable("RiskFreeRates");
+                });
+
             modelBuilder.Entity("ActuarialApplications.Models.Swap", b =>
                 {
                     b.Property<DateTime>("ValueDate")
