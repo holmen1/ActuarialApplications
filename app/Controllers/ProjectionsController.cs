@@ -1,7 +1,9 @@
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ActuarialApplications.Models;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ActuarialApplications.Controllers
 {
@@ -13,6 +15,11 @@ namespace ActuarialApplications.Controllers
         // HttpClient lifecycle management best practices:
         // https://learn.microsoft.com/dotnet/fundamentals/networking/http/httpclient-guidelines#recommended-use
         private static HttpClient _sharedClient;
+        
+        private SelectList SwapValueDates;
+        private List<int> SwapMaturities;
+        private List<double> SwapRates;
+        private ProjectionCreateModel ProjectionCreateModel;
 
         public ProjectionsController(LocalDbContext context, IConfiguration config)
         {
@@ -22,56 +29,114 @@ namespace ActuarialApplications.Controllers
             {
                 BaseAddress = new Uri(_ibnrUri),
             };
+            
         }
 
         // GET: Projections
         // where ValueDate is the most recent date in the database
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([Bind("SelectedDate")] DateTime selectedDate)
         {
-            var valueDate = await _context.RiskFreeRates.MaxAsync(r => r.ValueDate);
-            var rfr = await _context.RiskFreeRates.Where(r => r.ValueDate == valueDate).ToListAsync();
-            return View(rfr);
-        }
+            SwapValueDates = new SelectList(await _context.Swap.Select(s => s.ValueDate).Distinct().OrderByDescending(s => s).ToListAsync());
+            if (selectedDate == DateTime.MinValue)
+            {
+                selectedDate = _context.Swap.Select(s => s.ValueDate).DefaultIfEmpty().Max();
+            }
 
+            var swapRates = await _context.Swap.Where(s => s.ValueDate == selectedDate).OrderBy(s => s.Tenor).ToListAsync();
+
+            int maxProjectionId = await _context.RiskFreeRates.Where(r => r.ValueDate == selectedDate).Select(r => r.ProjectionId).DefaultIfEmpty().MaxAsync();
+            var rfr = await _context.RiskFreeRateData.Where(r => r.ProjectionId == maxProjectionId).ToListAsync();
+            var param = await _context.RiskFreeRates.FindAsync(maxProjectionId);
+            
+            return View(new ProjectionIndexModel
+            {
+                ValueDates = SwapValueDates,
+                SelectedDate = selectedDate,
+                SwapRates = swapRates,
+                Rfr = rfr,
+                Param = param
+            });
+        }
+        // public IActionResult Create(List<RiskFreeRateData> rfr)
         // GET: Projections/Create
-        public IActionResult Create()
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("ProjectionId,ValueDate,LastUpdated,RequestParameters,VerifiedBy")] RiskFreeRate riskFreeRate)
         {
-            return View();
+            try
+            {
+                _context.Update(riskFreeRate);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RiskFreeRateExists(riskFreeRate.ProjectionId))
+                {
+                    return NotFound();
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: Projections/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Ufr,ConvergenceMaturity,Tol")] double ufr, int convergencematurity, double tol)
+        public async Task<IActionResult> Create([Bind("SelectedDate,Ufr,ConvergenceMaturity")] DateTime selecteddate, double ufr, int convergencematurity, double tol)
         {
-
-            var swParameters = new SwParameters
+            var swapRates = await _context.Swap.Where(s => s.ValueDate == selecteddate).ToDictionaryAsync(s => s.Tenor, s => s.Value);
+            // Ensure that keys are in ascending order
+            swapRates = swapRates.OrderBy(s => s.Key).ToDictionary(s => s.Key, s => s.Value);
+            SwapRates = swapRates.Values.ToList();
+            SwapMaturities = swapRates.Keys.ToList();
+            
+            var swParameters = new FastApiRequestParameters
             {
-                ParRates = new List<double> { 0.03495, 0.0324, 0.0298, 0.02855 },
-                ParMaturities = new List<int> { 2, 3, 5, 10 },
+                ParRates = SwapRates,
+                ParMaturities = SwapMaturities,
                 Projection = new List<int> { 1, 151 },
+                Tol = 1E-4,
                 // From input form
                 Ufr = ufr,
-                ConvergenceMaturity = convergencematurity,
-                Tol = tol
+                ConvergenceMaturity = convergencematurity
             };
-
-            //DateTime valueDate = DateTime.Parse("2023-03-31");
-            DateTime valueDate = DateTime.Now;
+            
+            // Create string from swParameters
+            var swParametersJson = JsonSerializer.Serialize(swParameters);
+            DateTime createDate = DateTime.Now;
+            // Create incremental integer index key for database
+            int projectionId = _context.RiskFreeRates.Select(r => r.ProjectionId).DefaultIfEmpty().Max() + 1;
 
             using HttpResponseMessage response = await _sharedClient.PostAsJsonAsync("rates/", swParameters);
-            var resp = await response.Content.ReadFromJsonAsync<Response>();
-
+            var resp = await response.Content.ReadFromJsonAsync<FastApiResponse>();
+            
             // List of RiskFreeRate objects where Maturity is the index + 1
-            var rfr = resp.rfr.Select((value, index) => new RiskFreeRate { ValueDate = valueDate, Maturity = index + 1, Value = value }).ToList();
-
+            var rates = resp.rfr.Select((value, index) => new RiskFreeRateData { ProjectionId = projectionId, Maturity = index + 1, SpotValue = value,}).ToList();
+            var parameters = new RiskFreeRate
+            {
+                ProjectionId = projectionId,
+                ValueDate = selecteddate,
+                LastUpdated = createDate,
+                RequestParameters = swParametersJson
+            };
+            
+            ProjectionCreateModel = new ProjectionCreateModel
+            {
+                Rfr = rates,
+                Param = parameters
+            };
+            
             if (ModelState.IsValid)
             {
-                _context.AddRange(rfr);
+                _context.RiskFreeRateData.AddRange(rates);
+                _context.RiskFreeRates.AddRange(parameters);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(ProjectionCreateModel);
             }
-            return View();
+            return RedirectToAction(nameof(Index));
+        }
+        
+        private bool RiskFreeRateExists(int id)
+        {
+            return _context.RiskFreeRates.Any(e => e.ProjectionId == id);
         }
     }
 }

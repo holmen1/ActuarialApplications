@@ -1,40 +1,93 @@
-@model List<ActuarialApplications.Models.RiskFreeRate>
+@using NuGet.Protocol
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ProjectionIndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Projection";
 }
 
-<h1>Index</h1>
+<form method="get" asp-action="Index">
+    <div class="form-group">
+        <label>Swap ValueDate:</label>
+        <select asp-for="SelectedDate" asp-items="Model.ValueDates" onchange="this.form.submit();"></select>
+    </div>
+</form>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-
-<p>ValueDate: @Model[0].ValueDate</p>
 
 <table class="table">
-    <thead>
+    <tbody>
         <tr>
             <th>
-                Maturity
+                Tenor
             </th>
-            <th>
-                Spot
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
+            @foreach (var item in Model.SwapRates)
+            {
                 <td>
-                    @Html.DisplayFor(modelItem => item.Maturity)
+                    @Html.DisplayFor(modelItem => item.Tenor)
                 </td>
+            }
+        </tr>
+        <tr>
+            <th>
+                Par
+            </th>
+        @foreach (var item in Model.SwapRates)
+            {
                 <td>
                     @Html.DisplayFor(modelItem => item.Value)
                 </td>
-            </tr>
-        }
+            }
+        </tr>
     </tbody>
 </table>
 
+<p>Parameters: @Model.Param.ToJson()</p>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input type="hidden" asp-for="SelectedDate" value="@Model.SelectedDate"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ufr" class="control-label"></label>
+                <input asp-for="Ufr" class="form-control" value="0.0345"/>
+                <span asp-validation-for="Ufr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConvergenceMaturity" class="control-label"></label>
+                <input asp-for="ConvergenceMaturity" class="form-control" value="20"/>
+                <span asp-validation-for="ConvergenceMaturity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            Maturity
+        </th>
+        <th>
+            Spot
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Rfr )
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Maturity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SpotValue)
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

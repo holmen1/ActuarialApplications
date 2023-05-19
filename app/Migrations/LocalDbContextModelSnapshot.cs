@@ -18,18 +18,42 @@ namespace ActuarialApplications.Migrations
 
             modelBuilder.Entity("ActuarialApplications.Models.RiskFreeRate", b =>
                 {
+                    b.Property<int>("ProjectionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RequestParameters")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("ValueDate")
                         .HasColumnType("TEXT");
+
+                    b.Property<string>("VerifiedBy")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ProjectionId");
+
+                    b.ToTable("RiskFreeRates");
+                });
+
+            modelBuilder.Entity("ActuarialApplications.Models.RiskFreeRateData", b =>
+                {
+                    b.Property<int>("ProjectionId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("Value")
+                    b.Property<double>("SpotValue")
                         .HasColumnType("REAL");
 
-                    b.HasKey("ValueDate", "Maturity");
+                    b.HasKey("ProjectionId", "Maturity");
 
-                    b.ToTable("RiskFreeRates");
+                    b.ToTable("RiskFreeRateData");
                 });
 
             modelBuilder.Entity("ActuarialApplications.Models.Swap", b =>
@@ -46,7 +70,7 @@ namespace ActuarialApplications.Migrations
                     b.Property<double?>("SettlementFreq")
                         .HasColumnType("REAL");
 
-                    b.Property<double?>("Value")
+                    b.Property<double>("Value")
                         .HasColumnType("REAL");
 
                     b.HasKey("ValueDate", "Currency", "Tenor");

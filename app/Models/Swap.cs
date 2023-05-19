@@ -13,7 +13,7 @@ namespace ActuarialApplications.Models
         public string Currency { get; set; }
         public int Tenor { get; set; }
         public double? SettlementFreq { get; set; }
-        public double? Value { get; set; }
+        public double Value { get; set; }
     }
 
     public static class SeedSwapData

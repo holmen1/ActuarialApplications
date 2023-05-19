@@ -20,11 +20,12 @@ using ActuarialApplications.Models;
         });
 
         //EF demands primary keys
-        modelBuilder.Entity<ActuarialApplications.Models.RiskFreeRate>(entity => {
-            entity.HasKey(r => new { r.ValueDate, r.Maturity });
+        modelBuilder.Entity<ActuarialApplications.Models.RiskFreeRateData>(entity => {
+            entity.HasKey(r => new { r.ProjectionId, r.Maturity });
         });
     }
     
-        public DbSet<ActuarialApplications.Models.Swap> Swap { get; set; }
-        public DbSet<ActuarialApplications.Models.RiskFreeRate> RiskFreeRates { get; set; }
+        public DbSet<Swap> Swap { get; set; }
+        public DbSet<RiskFreeRate> RiskFreeRates { get; set; }
+        public DbSet<RiskFreeRateData> RiskFreeRateData { get; set; }
     }
