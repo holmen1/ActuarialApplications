@@ -6,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<LocalDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("LocalDbContext")));
+builder.Services.AddDbContext<LocalLifeDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("LocalLifeDbContext")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
