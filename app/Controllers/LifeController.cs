@@ -13,19 +13,19 @@ namespace ActuarialApplications.Controllers
             _context = context;
         }
 
-        // GET: Swaps
+        // GET: Contracts
         public async Task<IActionResult> Index()
         {
             return View(await _context.Contracts.ToListAsync());
         }
 
-        // GET: Swaps/Create
+        // GET: Contracts/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Swaps/Create
+        // POST: Contracts/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -41,9 +41,9 @@ namespace ActuarialApplications.Controllers
             return View(contract);
         }
 
-        // GET: Swaps/Edit/5
+        // GET: Contracts/Edit/5
        
-        // GET: Swaps/Delete/5
+        // GET: Contracts/Delete/5
         public async Task<IActionResult> Delete(DateTime ValueDate, int ContractNo)
         {
             if (ValueDate == null)
@@ -61,7 +61,7 @@ namespace ActuarialApplications.Controllers
             return View(contract);
         }
 
-        // POST: Swaps/Delete/5
+        // POST: Contracts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(DateTime ValueDate, int ContractNo)
