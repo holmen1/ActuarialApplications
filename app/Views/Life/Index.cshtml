@@ -1,4 +1,4 @@
-@model IEnumerable<ActuarialApplications.Models.Contract>
+@model LifeIndexModel
 
 @{
     ViewData["Title"] = "Index";
@@ -6,46 +6,141 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<form method="get" asp-action="Index">
+    <div class="form-group">
+        <label>Contract:</label>
+        <select asp-for="SelectedContractNo" asp-items="Model.contractNoList" onchange="this.form.submit();"></select>
+    </div>
+</form>
+
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ValueDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ContractNo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sex)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Table)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.contract.ContractNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.contract.ValueDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.contract.BirthDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.contract.Sex)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.contract.VestingAge)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.contract.GuaranteeBenefit)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.contract.PayPeriod)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.contract.Table)
+        </th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(model => model.contract.ContractNo)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.contract.ValueDate)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.contract.BirthDate)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.contract.Sex)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.contract.VestingAge)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.contract.GuaranteeBenefit)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.contract.PayPeriod)
+        </td>
+        <td>
+            @Html.DisplayFor(model => model.contract.Table)
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="get" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input type="hidden" name="ContractNo" value="@Model.contract.ContractNo"/>
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="ValueDate" value="@Model.contract.ValueDate"/>
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="BirthDate" value="@Model.contract.BirthDate"/>
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="Sex" value="@Model.contract.Sex"/>
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="VestingAge" value="@Model.contract.VestingAge"/>
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="GuaranteeBenefit" value="@Model.contract.GuaranteeBenefit"/>
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="PayPeriod" value="@Model.contract.PayPeriod"/>
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="Table" value="@Model.contract.Table"/>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Calculate Reserve" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.cashFlows[0].ContractNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.cashFlows[0].ValueDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.cashFlows[0].Month)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.cashFlows[0].Benefit)
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.cashFlows)
+    {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ValueDate)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ContractNo)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Sex)
+                @Html.DisplayFor(modelItem => item.ValueDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Table)
+                @Html.DisplayFor(modelItem => item.Month)
             </td>
             <td>
-                @Html.ActionLink("Delete", "Delete", new { ValueDate = item.ValueDate, ContractNo = item.ContractNo })
+                @Html.DisplayFor(modelItem => item.Benefit)
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

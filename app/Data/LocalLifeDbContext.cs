@@ -15,8 +15,12 @@ public class LocalLifeDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //EF demands primary keys
-        modelBuilder.Entity<Contract>(entity => { entity.HasKey(c => new { c.ValueDate, c.ContractNo }); });
+        modelBuilder.Entity<Contract>(entity => { entity.HasKey(c => c.ContractNo); });
+        
+        //EF demands primary keys
+        modelBuilder.Entity<CashFlow>(entity => { entity.HasKey(c => new { c.ValueDate, c.ContractNo, c.Month}); });
     }
 
     public DbSet<Contract> Contracts { get; set; }
+    public DbSet<CashFlow> CashFlows { get; set; }
 }

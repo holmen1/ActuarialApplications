@@ -1,0 +1,79 @@
+@model IEnumerable<ActuarialApplications.Models.Contract>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ContractNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ValueDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BirthDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Sex)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VestingAge)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GuaranteeBenefit)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PayPeriod)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Table)
+        </th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ContractNo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ValueDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BirthDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Sex)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VestingAge)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.GuaranteeBenefit)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PayPeriod)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Table)
+        </td>
+        <td>
+            @Html.ActionLink("Delete", "Delete", new { ValueDate = item.ValueDate, ContractNo = item.ContractNo })
+        </td>
+        <td>
+            @Html.ActionLink("Create", "Create", "Life",Model)
+        </td>
+    </tr>
+}
+    </tbody>
+</table>
