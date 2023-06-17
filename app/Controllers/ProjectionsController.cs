@@ -9,7 +9,7 @@ namespace ActuarialApplications.Controllers
 {
     public class ProjectionsController : Controller
     {
-        private readonly LocalDbContext _context;
+        private readonly LocalRateDbContext _context;
         private readonly string _ibnrUri;
 
         // HttpClient lifecycle management best practices:
@@ -21,7 +21,7 @@ namespace ActuarialApplications.Controllers
         private List<double> SwapRates;
         private ProjectionCreateModel ProjectionCreateModel;
 
-        public ProjectionsController(LocalDbContext context, IConfiguration config)
+        public ProjectionsController(LocalRateDbContext context, IConfiguration config)
         {
             _context = context;
             _ibnrUri = config.GetValue<string>("Serverless:rfr");

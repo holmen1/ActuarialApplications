@@ -20,9 +20,9 @@ namespace ActuarialApplications.Models
     {
         public static void Initialize(IServiceProvider serviceProvider)
         {
-            using (var context = new LocalDbContext(
+            using (var context = new LocalRateDbContext(
                 serviceProvider.GetRequiredService<
-                    DbContextOptions<LocalDbContext>>()))
+                    DbContextOptions<LocalRateDbContext>>()))
             {
                 // Look for any swaps
                 if (context.Swap.Any())

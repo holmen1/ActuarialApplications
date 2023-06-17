@@ -1,21 +1,34 @@
 # ActuarialApplications
 
 ### Description
+ASP.NET MVC application for actuarial applications.
 
 
-## Entity Framework
 
-dotnet ef migrations add InitialCreate -c LocalDbContext
-dotnet ef database update -c LocalDbContext
 
-dotnet ef migrations add InitialCreate -c LocalLifeDbContext
+## Setup
+
+Databases
+```bash 
+dotnet ef database update -c LocalRateDbContext  
 dotnet ef database update -c LocalLifeDbContext
-
-
-```bash
-dotnet ef database update
 ```
 
+APIs
+```bash
+docker run -it --rm -p 8004:8000 holmen1/smith-wilson-api:latest  
+docker run -it --rm -p 8005:80 holmen1/estimate-liabilities-api:latest
+```
+
+## Dependencies
+
+* Smith-Wilson API [github](https://github.com/holmen1/smith-wilson-par)  
+Extrapolate Risk Free Rates from par swap rates
+
+* EstimateLiabilities API [github](https://github.com/holmen1/EstimateLiabilitiesLife)  
+Estimate liabilities for life insurance policies
+
+### Entity Framework initial setup
 ```bash
 dotnet tool uninstall --global dotnet-aspnet-codegenerator
 dotnet tool install --global dotnet-aspnet-codegenerator --version 6.0
@@ -24,49 +37,10 @@ dotnet tool install --global dotnet-ef --version 6.0
 ```
 
 ```bash
-dotnet ef migrations add InitialCreate  
+dotnet ef migrations add InitialCreateRate -c LocalRateDbContext  
+
+dotnet ef migrations add InitialCreateLife -c LocalLifeDbContext  
 ```
-
-Run Cashflow API
-```bash
-docker run -it --rm -p 8005:80 holmen1/estimate-liabilities-api:latest
-```
-
-```bash
-
-Pull and run docker image smith-wilson-api
-```bash
- ./run.sh
-```
-Unable to find image 'holmen1/smith-wilson-api:latest' locally  
-latest: Pulling from holmen1/smith-wilson-api  
-3689b8de819b: Already exists  
-af8cd5f36469: Already exists   
-80384e04044f: Already exists   
-9fe06c6a3fe3: Already exists   
-f0712d0bdb15: Already exists   
-0b8877ad7468: Already exists   
-7065785fc5f9: Already exists   
-d6db181673bf: Already exists   
-c428a67ff4e2: Already exists   
-776b6fa606d8: Already exists   
-Digest: sha256:75396d15bf01bdc864e727aaa149824a19c7ab68554678b743413c885a66e691  
-Status: Downloaded newer image for holmen1/smith-wilson-api:latest  
-64336dd0f4a57b2045b7abc4a2de3f443e8025334ea0e2b5b7e69c8c95b318b6  
-
-
-Pull and run docker image estimate-liabilities-api
-```bash
-docker run -it --rm -p 8005:80 holmen1/estimate-liabilities-api:latest
-```
-
-
-
-
-## Projects
-
-* ActuarialApplications (ASP.NET Web app)
-
 
 ## TODO
 [x] Database  

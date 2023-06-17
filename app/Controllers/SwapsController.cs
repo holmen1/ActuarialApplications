@@ -11,9 +11,9 @@ namespace ActuarialApplications.Controllers
 {
     public class SwapsController : Controller
     {
-        private readonly LocalDbContext _context;
+        private readonly LocalRateDbContext _context;
 
-        public SwapsController(LocalDbContext context)
+        public SwapsController(LocalRateDbContext context)
         {
             _context = context;
         }

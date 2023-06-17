@@ -4,8 +4,8 @@ using ActuarialApplications.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddDbContext<LocalDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("LocalDbContext")));
+builder.Services.AddDbContext<LocalRateDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("LocalRateDbContext")));
 builder.Services.AddDbContext<LocalLifeDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("LocalLifeDbContext")));
 
