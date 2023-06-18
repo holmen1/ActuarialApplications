@@ -66,6 +66,8 @@
     </div>
 </div>
 
+<div id="projection" style="width: 800px; height: 500px;"></div>
+
 <table class="table">
     <thead>
     <tr>
@@ -91,3 +93,29 @@
     }
     </tbody>
 </table>
+
+@section Scripts {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawProjection);
+
+      function drawProjection() {
+        var data = google.visualization.arrayToDataTable([
+                ['Year', 'SpotValue']
+            ]
+            .concat(@Json.Serialize(Model.Rfr.Select(x => new[]
+                    { x.Maturity, 100 * x.SpotValue })))
+        );
+
+        var options = {
+          title: 'Risk-free rate projection',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('projection'));
+        chart.draw(data, options);
+      }
+    </script>
+}

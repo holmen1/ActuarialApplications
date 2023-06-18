@@ -61,11 +61,4 @@ namespace ActuarialApplications.Models
         public RiskFreeRate Param { get; set; }
         public List<RiskFreeRateData> Rfr { get; set; }
     }
-
-    public class ProjectionCreateModel
-    {
-        public List<RiskFreeRateData> Rfr { get; set; }
-        public RiskFreeRate Param { get; set; }
-        public int ProjectionId { get; set; }
-    }
 }
