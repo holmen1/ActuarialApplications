@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ActuarialApplications.Models;
@@ -52,19 +51,21 @@ namespace ActuarialApplications.Controllers
             Contract contract)
         {
             using HttpResponseMessage response = await _sharedClient.PostAsJsonAsync("cashflows/", contract);
-            var resp = await response.Content.ReadFromJsonAsync<CashFlowsResponse>();
+            var cf = await response.Content.ReadFromJsonAsync<List<double>>();
 
-            var cashflows = resp.benefits.Select((value, index) => new CashFlow
-                { ContractNo = resp.contractNo, ValueDate = resp.valueDate, Month = index, Benefit = value }).ToList();
+            var cashflows = cf.Select((value, index) => new CashFlow
+                { ContractNo = contract.ContractNo, ValueDate = contract.ValueDate, Month = index, Benefit = value }).ToList();
             if (ModelState.IsValid)
             {
                 if (CashFlowExists(cashflows.First().ValueDate, cashflows.First().ContractNo))
                 {
                     _context.UpdateRange(cashflows);
+                    TempData["Message"] = "Cashflows Updated";
                 }
                 else
                 {
                     _context.AddRange(cashflows);
+                    TempData["Message"] = "Cashflows Inserted";
                 }
                 await _context.SaveChangesAsync();
             }

@@ -4,13 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ActuarialApplications.Models
 {
-    internal class CashFlowsResponse
-    {
-        public int contractNo { get; set; }
-        public DateTime valueDate { get; set; }
-        public List<double> benefits { get; set; }
-    }
-    
     public class CashFlow
     {
         public DateTime ValueDate { get; set; }
