@@ -4,10 +4,8 @@ using ActuarialApplications.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddDbContext<LocalRateDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("LocalRateDbContext")));
-builder.Services.AddDbContext<LocalLifeDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("LocalLifeDbContext")));
+builder.Services.AddDbContext<AirflowDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("AirflowDbContext"))); 
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -17,9 +15,6 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-
-    SeedSwapData.Initialize(services);
-    Contract.SeedContractData.Initialize(services);
 }
 
 // Configure the HTTP request pipeline.

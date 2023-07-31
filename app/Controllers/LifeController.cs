@@ -7,14 +7,15 @@ namespace ActuarialApplications.Controllers
 {
     public class LifeController : Controller
     {
-        private readonly LocalLifeDbContext _context;
+        //private readonly LocalLifeDbContext _context;
+        private readonly AirflowDbContext _context;
         private readonly string _belUri;
 
         // HttpClient lifecycle management best practices:
         // https://learn.microsoft.com/dotnet/fundamentals/networking/http/httpclient-guidelines#recommended-use
         private static HttpClient _sharedClient;
 
-        public LifeController(LocalLifeDbContext context, IConfiguration config)
+        public LifeController(AirflowDbContext context, IConfiguration config)
         {
             _context = context;
             _belUri = config.GetValue<string>("Serverless:life");
@@ -52,9 +53,16 @@ namespace ActuarialApplications.Controllers
         {
             using HttpResponseMessage response = await _sharedClient.PostAsJsonAsync("cashflows/", contract);
             var cf = await response.Content.ReadFromJsonAsync<List<double>>();
+            // Necessary for postgresql to recognize the date as UTC
+            DateTime utcDate = DateTime.SpecifyKind(contract.ValueDate, DateTimeKind.Utc);
 
             var cashflows = cf.Select((value, index) => new CashFlow
-                { ContractNo = contract.ContractNo, ValueDate = contract.ValueDate, Month = index, Benefit = value }).ToList();
+                {
+                    ContractNo = contract.ContractNo,
+                    ValueDate = utcDate,
+                    Month = index,
+                    Benefit = value
+                }).ToList();
             if (ModelState.IsValid)
             {
                 if (CashFlowExists(cashflows.First().ValueDate, cashflows.First().ContractNo))

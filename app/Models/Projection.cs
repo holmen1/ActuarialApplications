@@ -27,11 +27,6 @@ namespace ActuarialApplications.Models
         public int Blaha { get; set; }
     }
 
-    public class FastApiResponse
-    {
-        public double alpha { get; set; }
-        public List<double> rfr { get; set; }
-    }
     public class RiskFreeRate
     {
         [Key]
@@ -53,6 +48,7 @@ namespace ActuarialApplications.Models
 
     public class ProjectionIndexModel
     {
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         public SelectList ValueDates{ get; set; }
         public DateTime SelectedDate { get; set; }
         public List<Swap> SwapRates { get; set; }
