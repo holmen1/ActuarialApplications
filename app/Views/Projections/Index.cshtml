@@ -16,28 +16,28 @@
 
 <table class="table">
     <tbody>
-        <tr>
-            <th>
-                Tenor
-            </th>
-            @foreach (var item in Model.SwapRates)
-            {
-                <td>
-                    @Html.DisplayFor(modelItem => item.Tenor)
-                </td>
-            }
-        </tr>
-        <tr>
-            <th>
-                Par
-            </th>
+    <tr>
+        <th>
+            Tenor
+        </th>
         @foreach (var item in Model.SwapRates)
-            {
-                <td>
-                    @Html.DisplayFor(modelItem => item.Value)
-                </td>
-            }
-        </tr>
+        {
+            <td>
+                @Html.DisplayFor(modelItem => item.Tenor)
+            </td>
+        }
+    </tr>
+    <tr>
+        <th>
+            Par
+        </th>
+        @foreach (var item in Model.SwapRates)
+        {
+            <td>
+                @Html.DisplayFor(modelItem => item.Value)
+            </td>
+        }
+    </tr>
     </tbody>
 </table>
 
@@ -58,7 +58,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.Rfr )
+    @foreach (var item in Model.Rfr)
     {
         <tr>
             <td>

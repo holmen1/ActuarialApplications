@@ -1,11 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using ActuarialApplications.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddDbContext<AirflowDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("AirflowDbContext"))); 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("AirflowDbContext")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -33,7 +32,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

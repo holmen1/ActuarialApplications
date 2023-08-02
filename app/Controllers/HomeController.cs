@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using ActuarialApplications.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ActuarialApplications.Controllers;
 
