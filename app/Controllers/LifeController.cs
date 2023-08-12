@@ -11,18 +11,16 @@ public class LifeController : Controller
     // https://learn.microsoft.com/dotnet/fundamentals/networking/http/httpclient-guidelines#recommended-use
     private static HttpClient _sharedClient;
 
-    private readonly string _belUri;
-
     private readonly AirflowDbContext _context;
     private DateTime _selectedDate;
 
     public LifeController(AirflowDbContext context, IConfiguration config)
     {
         _context = context;
-        _belUri = config.GetValue<string>("Serverless:life");
+        var estimateLiabilitiesApiUri = config.GetValue<string>("Serverless:life");
         _sharedClient = new HttpClient
         {
-            BaseAddress = new Uri(_belUri)
+            BaseAddress = new Uri(estimateLiabilitiesApiUri)
         };
     }
 
@@ -34,20 +32,20 @@ public class LifeController : Controller
         if (selectedContractNo == 0)
             selectedContractNo = _context.Contracts.Select(c => c.ContractNo).DefaultIfEmpty().Max();
 
-        Contract selectedContract = await _context.Contracts.FindAsync(selectedContractNo);
+        var selectedContract = await _context.Contracts.FindAsync(selectedContractNo);
         _selectedDate = DateTime.SpecifyKind(selectedContract.ValueDate, DateTimeKind.Utc);
-        List<RiskFreeRateData> rfr = await GetDiscountAsync(_selectedDate);
-        List<CashFlow> cf = await GetCashFlowsAsync(selectedContract);
-        List<CashFlow> discountedCashFlows = GetDiscountedCashFlows(cf, rfr);
+        var rfr = await GetDiscountAsync(_selectedDate);
+        var cf = await GetCashFlowsAsync(selectedContract);
+        var discountedCashFlows = GetDiscountedCashFlows(cf, rfr);
         var indexModel = new LifeIndexModel
         {
-            contractNoList = contractNoList,
+            ContractNoList = contractNoList,
             SelectedContractNo = selectedContractNo,
-            contract = selectedContract,
+            Contract = selectedContract,
             Age = GetAge(selectedContract),
             TechnicalProvision = GetTechnicalProvision(discountedCashFlows),
-            cashFlows = cf,
-            discountedCashFlows = discountedCashFlows
+            CashFlows = cf,
+            DiscountedCashFlows = discountedCashFlows
         };
 
         return View(indexModel);
@@ -86,7 +84,7 @@ public class LifeController : Controller
             await _context.SaveChangesAsync();
         }
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Index), new { selectedContractNo = contract.ContractNo });
     }
 
     private bool CashFlowExists(DateTime valueDate, int contractNo)
@@ -109,7 +107,7 @@ public class LifeController : Controller
 
     private async Task<List<RiskFreeRateData>> GetDiscountAsync(DateTime valueDate)
     {
-        int projId = await _context.RiskFreeRates.Where(r => r.ValueDate == valueDate).Select(r => r.ProjectionId)
+        var projId = await _context.RiskFreeRates.Where(r => r.ValueDate == valueDate).Select(r => r.ProjectionId)
             .FirstOrDefaultAsync();
         var riskFreeRateData = await _context.RiskFreeRateData.Where(r => r.ProjectionId == projId)
             .OrderBy(r => r.Month).ToListAsync();
@@ -119,7 +117,7 @@ public class LifeController : Controller
     private List<CashFlow> GetDiscountedCashFlows(List<CashFlow> cashFlows, List<RiskFreeRateData> riskFreeRateData)
     {
         var discountedCashFlows = new List<CashFlow>();
-        for (int i = 0; i < cashFlows.Count; i++)
+        for (var i = 0; i < cashFlows.Count; i++)
         {
             var discountedCashFlow = new CashFlow
             {
@@ -133,7 +131,7 @@ public class LifeController : Controller
 
         return discountedCashFlows;
     }
-    
+
     private double GetTechnicalProvision(List<CashFlow> discountedCashFlows)
     {
         return discountedCashFlows.Sum(c => c.Benefit);

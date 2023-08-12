@@ -13,12 +13,14 @@ public class CashFlow
 
 public class LifeIndexModel
 {
-    public SelectList contractNoList { get; set; }
+    public SelectList ContractNoList { get; set; }
     public int SelectedContractNo { get; set; }
-    public Contract contract { get; set; }
+    public Contract Contract { get; set; }
     public double Age { get; set; }
+
     [DisplayFormat(DataFormatString = "{0:N2}")]
     public double TechnicalProvision { get; set; }
-    public List<CashFlow> cashFlows { get; set; }
-    public List<CashFlow> discountedCashFlows { get; set; }
+
+    public List<CashFlow>? CashFlows { get; set; }
+    public List<CashFlow>? DiscountedCashFlows { get; set; }
 }

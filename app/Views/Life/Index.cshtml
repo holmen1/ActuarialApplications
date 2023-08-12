@@ -9,7 +9,7 @@
 <form method="get" asp-action="Index">
     <div class="form-group">
         <label>Contract:</label>
-        <select asp-for="SelectedContractNo" asp-items="Model.contractNoList" onchange="this.form.submit();"></select>
+        <select asp-for="SelectedContractNo" asp-items="Model.ContractNoList" onchange="this.form.submit();"></select>
     </div>
 </form>
 
@@ -17,56 +17,56 @@
     <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.contract.ContractNo)
+            @Html.DisplayNameFor(model => model.Contract.ContractNo)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.contract.ValueDate)
+            @Html.DisplayNameFor(model => model.Contract.ValueDate)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.contract.BirthDate)
+            @Html.DisplayNameFor(model => model.Contract.BirthDate)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.contract.Sex)
+            @Html.DisplayNameFor(model => model.Contract.Sex)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.contract.VestingAge)
+            @Html.DisplayNameFor(model => model.Contract.VestingAge)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.contract.GuaranteeBenefit)
+            @Html.DisplayNameFor(model => model.Contract.GuaranteeBenefit)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.contract.PayPeriod)
+            @Html.DisplayNameFor(model => model.Contract.PayPeriod)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.contract.Table)
+            @Html.DisplayNameFor(model => model.Contract.Table)
         </th>
     </tr>
     </thead>
     <tbody>
     <tr>
         <td>
-            @Html.DisplayFor(model => model.contract.ContractNo)
+            @Html.DisplayFor(model => model.Contract.ContractNo)
         </td>
         <td>
-            @Html.DisplayFor(model => model.contract.ValueDate)
+            @Html.DisplayFor(model => model.Contract.ValueDate)
         </td>
         <td>
-            @Html.DisplayFor(model => model.contract.BirthDate)
+            @Html.DisplayFor(model => model.Contract.BirthDate)
         </td>
         <td>
-            @Html.DisplayFor(model => model.contract.Sex)
+            @Html.DisplayFor(model => model.Contract.Sex)
         </td>
         <td>
-            @Html.DisplayFor(model => model.contract.VestingAge)
+            @Html.DisplayFor(model => model.Contract.VestingAge)
         </td>
         <td>
-            @Html.DisplayFor(model => model.contract.GuaranteeBenefit)
+            @Html.DisplayFor(model => model.Contract.GuaranteeBenefit)
         </td>
         <td>
-            @Html.DisplayFor(model => model.contract.PayPeriod)
+            @Html.DisplayFor(model => model.Contract.PayPeriod)
         </td>
         <td>
-            @Html.DisplayFor(model => model.contract.Table)
+            @Html.DisplayFor(model => model.Contract.Table)
         </td>
     </tr>
     </tbody>
@@ -78,28 +78,28 @@
         <form method="get" asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <input type="hidden" name="ContractNo" value="@Model.contract.ContractNo"/>
+                <input type="hidden" name="ContractNo" value="@Model.Contract.ContractNo"/>
             </div>
             <div class="form-group">
-                <input type="hidden" name="ValueDate" value="@Model.contract.ValueDate"/>
+                <input type="hidden" name="ValueDate" value="@Model.Contract.ValueDate"/>
             </div>
             <div class="form-group">
-                <input type="hidden" name="BirthDate" value="@Model.contract.BirthDate"/>
+                <input type="hidden" name="BirthDate" value="@Model.Contract.BirthDate"/>
             </div>
             <div class="form-group">
-                <input type="hidden" name="Sex" value="@Model.contract.Sex"/>
+                <input type="hidden" name="Sex" value="@Model.Contract.Sex"/>
             </div>
             <div class="form-group">
-                <input type="hidden" name="VestingAge" value="@Model.contract.VestingAge"/>
+                <input type="hidden" name="VestingAge" value="@Model.Contract.VestingAge"/>
             </div>
             <div class="form-group">
-                <input type="hidden" name="GuaranteeBenefit" value="@Model.contract.GuaranteeBenefit"/>
+                <input type="hidden" name="GuaranteeBenefit" value="@Model.Contract.GuaranteeBenefit"/>
             </div>
             <div class="form-group">
-                <input type="hidden" name="PayPeriod" value="@Model.contract.PayPeriod"/>
+                <input type="hidden" name="PayPeriod" value="@Model.Contract.PayPeriod"/>
             </div>
             <div class="form-group">
-                <input type="hidden" name="Table" value="@Model.contract.Table"/>
+                <input type="hidden" name="Table" value="@Model.Contract.Table"/>
             </div>
             <div class="form-group">
                 <input type="submit" value="Get cashflows" class="btn btn-primary"/>
@@ -108,8 +108,11 @@
     </div>
 </div>
 
-<div id="chart_div" style="width: 1400px; height: 500px;"></div>
-<div id="discounted_chart_div" style="width: 1400px; height: 500px;"></div>
+@if (Model.DiscountedCashFlows.Any())
+{
+    <div id="chart_div" style="width: 1400px; height: 500px;"></div>
+    <div id="discounted_chart_div" style="width: 1400px; height: 500px;"></div>
+}
 
 <div>
     Technical Provision: @Html.DisplayFor(model => model.TechnicalProvision)
@@ -127,21 +130,21 @@
     <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.cashFlows[0].ContractNo)
+            @Html.DisplayNameFor(model => model.CashFlows[0].ContractNo)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.cashFlows[0].ValueDate)
+            @Html.DisplayNameFor(model => model.CashFlows[0].ValueDate)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.cashFlows[0].Month)
+            @Html.DisplayNameFor(model => model.CashFlows[0].Month)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.cashFlows[0].Benefit)
+            @Html.DisplayNameFor(model => model.CashFlows[0].Benefit)
         </th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.cashFlows)
+    @foreach (var item in Model.CashFlows)
     {
         <tr>
             <td>
@@ -172,7 +175,7 @@
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
                 ['Month', 'Benefit'],
-                @foreach (var item in Model.cashFlows)
+                @foreach (var item in Model.CashFlows)
                 {
                     @:[@item.Month/12 + @Model.Age, @item.Benefit],
                 }
@@ -191,7 +194,7 @@
         function drawDiscountedCashflows() {
             var data = google.visualization.arrayToDataTable([
                 ['Month', 'Benefit'],
-                @foreach (var item in Model.discountedCashFlows)
+                @foreach (var item in Model.DiscountedCashFlows)
                 {
                     @:[@item.Month/12 + @Model.Age, @item.Benefit],
                 }

@@ -32,9 +32,8 @@ public class ProjectionsController : Controller
 
         var maxProjectionId = await _context.RiskFreeRates.Where(r => r.ValueDate == selectedDate)
             .Select(r => r.ProjectionId).DefaultIfEmpty().MaxAsync();
-        var rfr = await _context.RiskFreeRateData.
-            Where(r => r.ProjectionId == maxProjectionId).
-            OrderBy(r => r.Month).ToListAsync();
+        var rfr = await _context.RiskFreeRateData.Where(r => r.ProjectionId == maxProjectionId).OrderBy(r => r.Month)
+            .ToListAsync();
         var param = await _context.RiskFreeRates.FindAsync(maxProjectionId);
 
         return View(new ProjectionIndexModel
