@@ -72,6 +72,7 @@
     </tbody>
 </table>
 
+
 <div class="row">
     <div class="col-md-4">
         <form method="get" asp-action="Create">
@@ -106,6 +107,14 @@
         </form>
     </div>
 </div>
+
+<div id="chart_div" style="width: 1400px; height: 500px;"></div>
+<div id="discounted_chart_div" style="width: 1400px; height: 500px;"></div>
+
+<div>
+    Technical Provision: @Html.DisplayFor(model => model.TechnicalProvision)
+</div>
+
 
 @if (TempData["Message"] != null)
 {
@@ -151,3 +160,51 @@
     }
     </tbody>
 </table>
+
+
+@section Scripts {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(drawDiscountedCashflows);
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Month', 'Benefit'],
+                @foreach (var item in Model.cashFlows)
+                {
+                    @:[@item.Month/12 + @Model.Age, @item.Benefit],
+                }
+            ]);
+
+            var options = {
+                title: 'Cashflows',
+                hAxis: {title: 'Age', minValue:65, maxValue:100, titleTextStyle: {color: '#333'}},
+                vAxis: {minValue: 0}
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+        
+        function drawDiscountedCashflows() {
+            var data = google.visualization.arrayToDataTable([
+                ['Month', 'Benefit'],
+                @foreach (var item in Model.discountedCashFlows)
+                {
+                    @:[@item.Month/12 + @Model.Age, @item.Benefit],
+                }
+            ]);
+
+            var options = {
+                title: 'Discounted Cashflows',
+                hAxis: {title: 'Age', minValue:65, maxValue:100, titleTextStyle: {color: '#333'}},
+                vAxis: {minValue: 0}
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('discounted_chart_div'));
+            chart.draw(data, options);
+        }
+    </script>
+}

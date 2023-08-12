@@ -1,5 +1,4 @@
 @using NuGet.Protocol
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model ProjectionIndexModel
 
 @{
@@ -50,6 +49,9 @@
     <thead>
     <tr>
         <th>
+            Month
+        </th>
+        <th>
             Maturity
         </th>
         <th>
@@ -61,6 +63,9 @@
     @foreach (var item in Model.Rfr)
     {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Month)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Maturity)
             </td>

@@ -11,23 +11,23 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SQLite" Version="6.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0" />
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.8" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SQLite" Version="6.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0"/>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.8"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Migrations\" />
+        <Folder Include="Migrations\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="Views\Swaps\Create.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Swaps\Delete.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Swaps\Index.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Contract\Create.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Contract\Delete.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Contract\Index.cshtml" />
+        <_ContentIncludedByDefault Remove="Views\Swaps\Create.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Swaps\Delete.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Swaps\Index.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Contract\Create.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Contract\Delete.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\Contract\Index.cshtml"/>
     </ItemGroup>
 
 </Project>
