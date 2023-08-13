@@ -7,21 +7,17 @@ namespace ActuarialApplications.Controllers;
 
 public class LifeController : Controller
 {
-    // HttpClient lifecycle management best practices:
-    // https://learn.microsoft.com/dotnet/fundamentals/networking/http/httpclient-guidelines#recommended-use
-    private static HttpClient _sharedClient;
-
     private readonly AirflowDbContext _context;
+    private readonly IHttpClientFactory _clientFactory;
+    private readonly IConfiguration _config;
+    
     private DateTime _selectedDate;
 
-    public LifeController(AirflowDbContext context, IConfiguration config)
+    public LifeController(AirflowDbContext context, IHttpClientFactory clientFactory, IConfiguration config)
     {
         _context = context;
-        var estimateLiabilitiesApiUri = config.GetValue<string>("Serverless:life");
-        _sharedClient = new HttpClient
-        {
-            BaseAddress = new Uri(estimateLiabilitiesApiUri)
-        };
+        _clientFactory = clientFactory;
+        _config = config;
     }
 
     // GET: Contracts
@@ -56,8 +52,11 @@ public class LifeController : Controller
         [Bind("ValueDate,ContractNo,BirthDate,Sex,VestingAge,GuaranteeBenefit,PayPeriod,Table")]
         Contract contract)
     {
-        using var response = await _sharedClient.PostAsJsonAsync("cashflows/", contract);
+        var uri = _config.GetValue<string>("Serverless:life") + "cashflows/";
+        var client = _clientFactory.CreateClient();
+        using var response = await client.PostAsJsonAsync(uri, contract);
         var cf = await response.Content.ReadFromJsonAsync<List<double>>();
+
         // Necessary for postgresql to recognize the date as UTC
         var utcDate = DateTime.SpecifyKind(contract.ValueDate, DateTimeKind.Utc);
 
