@@ -1,14 +1,21 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ActuarialApplications.Models;
 
-public class CashFlow
+public class ResponseCashFlow
+{
+    [JsonPropertyName("month")]
+    public int Month { get; set; }
+    [JsonPropertyName("benefit")]
+    public double Benefit { get; set; }
+}
+
+public class CashFlow : ResponseCashFlow
 {
     public DateTime ValueDate { get; set; }
     public int ContractNo { get; set; }
-    public int Month { get; set; }
-    public double Benefit { get; set; }
 }
 
 public class LifeIndexModel

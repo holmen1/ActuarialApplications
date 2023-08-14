@@ -55,17 +55,17 @@ public class LifeController : Controller
         var uri = _config.GetValue<string>("Serverless:life") + "cashflows/";
         var client = _clientFactory.CreateClient();
         using var response = await client.PostAsJsonAsync(uri, contract);
-        var cf = await response.Content.ReadFromJsonAsync<List<double>>();
+        var cf = await response.Content.ReadFromJsonAsync<List<ResponseCashFlow>>();
 
         // Necessary for postgresql to recognize the date as UTC
         var utcDate = DateTime.SpecifyKind(contract.ValueDate, DateTimeKind.Utc);
 
-        var cashflows = cf.Select((value, index) => new CashFlow
+        var cashflows = cf.Select( c => new CashFlow
         {
             ContractNo = contract.ContractNo,
             ValueDate = utcDate,
-            Month = index,
-            Benefit = value
+            Month = c.Month,
+            Benefit = c.Benefit
         }).ToList();
         if (ModelState.IsValid)
         {
@@ -116,14 +116,14 @@ public class LifeController : Controller
     private List<CashFlow> GetDiscountedCashFlows(List<CashFlow> cashFlows, List<RiskFreeRateData> riskFreeRateData)
     {
         var discountedCashFlows = new List<CashFlow>();
-        for (var i = 0; i < cashFlows.Count; i++)
+        foreach (CashFlow cf in cashFlows)
         {
             var discountedCashFlow = new CashFlow
             {
-                ContractNo = cashFlows[i].ContractNo,
-                ValueDate = cashFlows[i].ValueDate,
-                Month = cashFlows[i].Month,
-                Benefit = cashFlows[i].Benefit * riskFreeRateData[i].Price
+                ContractNo = cf.ContractNo,
+                ValueDate = cf.ValueDate,
+                Month = cf.Month,
+                Benefit = cf.Benefit * riskFreeRateData.Where(r => r.Month == cf.Month).Select(r => r.Price).FirstOrDefault()
             };
             discountedCashFlows.Add(discountedCashFlow);
         }
