@@ -19,7 +19,7 @@ public class AirflowDbContext : DbContext
         //EF demands primary keys
         modelBuilder.Entity<Swap>(entity =>
         {
-            entity.HasKey(s => new { s.ValueDate, s.Currency, s.Tenor });
+            entity.HasKey(s => new { s.ValueDate, Currency = s.Id, s.Tenor });
             entity.ToTable("swap", "holmen");
         });
 
