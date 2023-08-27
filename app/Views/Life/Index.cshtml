@@ -76,31 +76,29 @@
 <div class="row">
     <div class="col-md-4">
         <form method="get" asp-action="Create">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Birth Date</th>
+                    <th>Sex</th>
+                    <th>Vesting Age</th>
+                    <th>Guarantee Benefit</th>
+                    <th>Pay Period</th>
+                    <th>Table</th>
+                </tr>
+                </thead>
+                <tr>
+                    <input type="hidden" name="ContractNo" value="@Model.Contract.ContractNo"/>
+                    <input type="hidden" name="ValueDate" value="@Model.Contract.ValueDate"/>
+                    <td><input type="text" name="BirthDate" value="@Model.Contract.BirthDate"/></td>
+                    <td><input type="text" name="Sex" value="@Model.Contract.Sex"/></td>
+                    <td><input type="text" name="VestingAge" value="@Model.Contract.VestingAge"/></td>
+                    <td><input type="text" name="GuaranteeBenefit" value="@Model.Contract.GuaranteeBenefit"/></td>
+                    <td><input type="text" name="PayPeriod" value="@Model.Contract.PayPeriod"/></td>
+                    <td><input type="text" name="Table" value="@Model.Contract.Table"/></td>
+                </tr>
+            </table>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <input type="hidden" name="ContractNo" value="@Model.Contract.ContractNo"/>
-            </div>
-            <div class="form-group">
-                <input type="hidden" name="ValueDate" value="@Model.Contract.ValueDate"/>
-            </div>
-            <div class="form-group">
-                <input type="hidden" name="BirthDate" value="@Model.Contract.BirthDate"/>
-            </div>
-            <div class="form-group">
-                <input type="hidden" name="Sex" value="@Model.Contract.Sex"/>
-            </div>
-            <div class="form-group">
-                <input type="hidden" name="VestingAge" value="@Model.Contract.VestingAge"/>
-            </div>
-            <div class="form-group">
-                <input type="hidden" name="GuaranteeBenefit" value="@Model.Contract.GuaranteeBenefit"/>
-            </div>
-            <div class="form-group">
-                <input type="hidden" name="PayPeriod" value="@Model.Contract.PayPeriod"/>
-            </div>
-            <div class="form-group">
-                <input type="hidden" name="Table" value="@Model.Contract.Table"/>
-            </div>
             <div class="form-group">
                 <input type="submit" value="Get cashflows" class="btn btn-primary"/>
             </div>
@@ -183,7 +181,13 @@
 
             var options = {
                 title: 'Estimated Cashflows',
-                hAxis: {title: 'Age', minValue:@Model.Age, maxValue:104, titleTextStyle: {color: '#333'}},
+                hAxis: {title: 'Age',
+                        viewWindow: {
+                            min: @Model.Age,
+                            max: 104
+                        },
+                        titleTextStyle: {color: '#333'}
+                },
                 vAxis: {minValue: 0}
             };
 
@@ -202,7 +206,13 @@
 
             var options = {
                 title: 'Discounted Estimated Cashflows',
-                hAxis: {title: 'Age', minValue:@Model.Age, maxValue:104, titleTextStyle: {color: '#333'}},
+                hAxis: {title: 'Age',
+                        viewWindow: {
+                            min: @Model.Age,
+                            max: 104
+                        },
+                        titleTextStyle: {color: '#333'}
+                },
                 vAxis: {minValue: 0}
             };
 

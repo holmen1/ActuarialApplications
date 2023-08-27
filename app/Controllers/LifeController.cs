@@ -10,7 +10,7 @@ public class LifeController : Controller
     private readonly AirflowDbContext _context;
     private readonly IHttpClientFactory _clientFactory;
     private readonly IConfiguration _config;
-    
+
     private DateTime _selectedDate;
 
     public LifeController(AirflowDbContext context, IHttpClientFactory clientFactory, IConfiguration config)
@@ -23,13 +23,16 @@ public class LifeController : Controller
     // GET: Contracts
     public async Task<IActionResult> Index([Bind("SelectedContractNo")] int selectedContractNo)
     {
-        var contractNoList = new SelectList(await _context.Contracts.Select(c => c.ContractNo).Distinct()
-            .OrderByDescending(s => s).ToListAsync());
-        if (selectedContractNo == 0)
-            selectedContractNo = _context.Contracts.Select(c => c.ContractNo).DefaultIfEmpty().Max();
+        _selectedDate = await GetValueDateAsync();
+        var contractNoList = new SelectList(await _context.Contracts.Where(c => c.ValueDate == _selectedDate)
+            .Select(c => c.ContractNo).Distinct().OrderBy(n => n).ToListAsync());
 
-        var selectedContract = await _context.Contracts.FindAsync(selectedContractNo);
-        _selectedDate = DateTime.SpecifyKind(selectedContract.ValueDate, DateTimeKind.Utc);
+        if (selectedContractNo == 0)
+            selectedContractNo = _context.Contracts.Where(c => c.ValueDate == _selectedDate).Select(c => c.ContractNo)
+                .Max();
+
+        var selectedContract = await GetContractAsync(_selectedDate, selectedContractNo);
+
         var rfr = await GetDiscountAsync(_selectedDate);
         var cf = await GetCashFlowsAsync(selectedContract);
         var discountedCashFlows = GetDiscountedCashFlows(cf, rfr);
@@ -58,20 +61,29 @@ public class LifeController : Controller
         var cf = await response.Content.ReadFromJsonAsync<List<ResponseCashFlow>>();
 
         // Necessary for postgresql to recognize the date as UTC
-        var utcDate = DateTime.SpecifyKind(contract.ValueDate, DateTimeKind.Utc);
+        var utcDate = DateTime.SpecifyKind(contract.ValueDate, DateTimeKind.Utc);//.ToUniversalTime();
 
-        var cashflows = cf.Select( c => new CashFlow
+        double minBenefit = 1E-12;
+        var cashflows = cf.Select(c => new CashFlow
         {
             ContractNo = contract.ContractNo,
             ValueDate = utcDate,
             Month = c.Month,
-            Benefit = c.Benefit
+            // Handles System.OverflowException: Numeric value does not fit in a System.Decimal
+            Benefit = Convert.ToDouble(c.Benefit) < minBenefit ? minBenefit : c.Benefit
         }).ToList();
         if (ModelState.IsValid)
         {
-            if (CashFlowExists(cashflows.First().ValueDate, cashflows.First().ContractNo))
+            if (CashFlowExists(utcDate, contract.ContractNo))
             {
-                _context.UpdateRange(cashflows);
+                var cashflowsToDelete = await _context.CashFlows.Where(c => c.ValueDate == utcDate && c.ContractNo == contract.ContractNo)
+                    .Select(c => new CashFlow { ContractNo = c.ContractNo,
+                        ValueDate = c.ValueDate.ToUniversalTime(),
+                        Month = c.Month,
+                        Benefit = c.Benefit })
+                    .ToListAsync();
+                _context.RemoveRange(cashflowsToDelete);
+                _context.AddRange(cashflows);
                 TempData["Message"] = "Cashflows Updated";
             }
             else
@@ -104,6 +116,21 @@ public class LifeController : Controller
         return cashFlows;
     }
 
+    private async Task<DateTime> GetValueDateAsync()
+    {
+        // Get the latest value date that exists in both the contracts and risk free rate tables
+        var valueDate = await _context.Contracts.Select(c => c.ValueDate).Intersect(
+            _context.RiskFreeRates.Select(r => r.ValueDate)).MaxAsync();
+        return DateTime.SpecifyKind(valueDate, DateTimeKind.Utc);
+    }
+
+    private async Task<Contract> GetContractAsync(DateTime valueDate, int contractNo)
+    {
+        var contract = await _context.Contracts.Where(c => c.ValueDate == valueDate && c.ContractNo == contractNo)
+            .FirstOrDefaultAsync();
+        return contract;
+    }
+
     private async Task<List<RiskFreeRateData>> GetDiscountAsync(DateTime valueDate)
     {
         var projId = await _context.RiskFreeRates.Where(r => r.ValueDate == valueDate).Select(r => r.ProjectionId)
@@ -123,7 +150,8 @@ public class LifeController : Controller
                 ContractNo = cf.ContractNo,
                 ValueDate = cf.ValueDate,
                 Month = cf.Month,
-                Benefit = cf.Benefit * riskFreeRateData.Where(r => r.Month == cf.Month).Select(r => r.Price).FirstOrDefault()
+                Benefit = cf.Benefit * riskFreeRateData.Where(r => r.Month == cf.Month).Select(r => r.Price)
+                    .FirstOrDefault()
             };
             discountedCashFlows.Add(discountedCashFlow);
         }
